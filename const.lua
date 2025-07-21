@@ -48,6 +48,18 @@ local const = {
 
     },
 
+    -- GAME STATE
+    GAME_STATE = {
+
+        STARTED = "started",
+        PLAY = "play",
+        PAUSE = "pause",
+        RESTART = "restart",
+        QUIT = "quit",
+        GAMEOVER = "gameover",
+
+    },
+
     -- animation
     ANIM = {
 
@@ -77,15 +89,40 @@ local const = {
         SLASH_ONE = love.audio.newSource("assets/sounds/Slash1.wav", "static"),
         SWORD_FOUR = love.audio.newSource("assets/sounds/Sword4.wav", "static"),
         EQUIP = love.audio.newSource("assets/sounds/Equip.wav", "static"),
+        BOW_SHOOT = love.audio.newSource("assets/sounds/Crossbow.wav", "static"),
+        MUSIC = love.audio.newSource("assets/sounds/Tunnel.wav", "stream"),
     },
 
 
+    --OBJECT
     OBJECT = {
         BOW = "bow",
         ARROW = "arrow",
-        SWORD = "sword"
-    }
+        SWORD = "sword",
+    },
 
+
+
+    TEXT = {
+
+        TUTO_TEXT = "Bienvenue dans une Version Pre-Alpha de Mansion Escape appuyez sur une touche pour demmarrer",
+        TUTO = {"Touche E = ramasser", "Touche A = Epée", "touche B = Arc", "Touche ESC = quitter"},
+        PAUSE_OPTIONS = {"Reprendre", "Quitter"},
+        STARTED_OPTIONS = {"Start"},
+
+        ALIGN = {
+
+            CENTER = "center",
+            --left right ect...
+        },
+    },
+
+
+    FONT = {
+
+        KEN = love.graphics.newFont("assets/font/kenvector_future_thin.ttf")
+        
+    }
 
 
 }

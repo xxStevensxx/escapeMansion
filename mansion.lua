@@ -220,7 +220,7 @@ function modulMansion.load()
     ms = modulMansion.createMansion()
     ms:mapGenerator()
     ms:setRoomStart()
-    ms:RandomizeRoomMansion(10)  
+    ms:RandomizeRoomMansion(5)  
     map.load(listRooms)
 end
 
@@ -238,7 +238,7 @@ function modulMansion.keypressed(key)
         ms = modulMansion.createMansion()
         ms:mapGenerator()
         ms:setRoomStart()
-        ms:RandomizeRoomMansion(10)
+        ms:RandomizeRoomMansion(5)
         
          
     end

@@ -30,5 +30,13 @@ function util.sndClone()
 end
 
 
+function util.scale(scale)
+
+    return scale
+
+end
+
 return util
+
+
 

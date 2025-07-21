@@ -19,6 +19,8 @@ function module_mansion_map.new()
         quad = {},
         map = {
             grid = {},
+            line = 0, 
+            column = 0,
             x = 0,
             y = 0,
             width = 0,
@@ -69,7 +71,7 @@ function module_mansion_map.create(pType)
             
             elseif up and right and down then
                 -- print("Portes : haut, droite, bas")
-                table.insert(self.map.grid,grid.MANSION.ROOM_TWO)
+                table.insert(self.map.grid,grid.MANSION.ROOM_ONE)
             
             elseif up and right and left then
                 -- print("Portes : haut, droite, gauche")
@@ -138,34 +140,39 @@ function module_mansion_map.create(pType)
 
         local tileID
 
-        for room = 1, #self.map.grid do
+        for roomIndex = 1, #self.map.grid do
 
-            local room = self.map.grid[room]
+            local room = self.map.grid[roomIndex]
+            local offsetX = (roomIndex - 1) * #room[1] * self.tileWidth * _G.scale
 
             for row = 1, #room do
-
+                
                 for column = 1, #room[row] do
-
-                    tileID =  room[row][column]
-
-                    love.graphics.draw(self.tileSheet, self.quad[tileID], column  * self.tileHeight * 3,  row  * self.tileWidth * 3, 0, 3, 3)
-
+                    
+                    tileID = room[row][column]
+                    
+                    love.graphics.draw(self.tileSheet, self.quad[tileID], offsetX + column  * self.tileWidth * _G.scale,  row  * self.tileHeight * _G.scale, 0, _G.scale, _G.scale)
+                    
                 end
+
+                self.map.line = #room[row]
+                self.map.column = #room
+                self.map.width = #room[row] * self.tileWidth
+                self.map.height = #room * self.tileHeight
+
             end
 
         end
 
         --deco
-        love.graphics.draw(self.tileSheet, self.quad[47],100, 100, 0, 3, 3)
-        love.graphics.draw(self.tileSheet, self.quad[40],250, 80, 0, 3, 3)
-        love.graphics.draw(self.tileSheet, self.quad[78],450, 100, 0, 3, 3)
-        love.graphics.draw(self.tileSheet, self.quad[87],550, 340, 0, 3, 3)
+        love.graphics.draw(self.tileSheet, self.quad[47],100, 100, 0, _G.scale, _G.scale)
+        love.graphics.draw(self.tileSheet, self.quad[40],250, 80, 0, _G.scale, _G.scale)
+        love.graphics.draw(self.tileSheet, self.quad[78],450, 100, 0, _G.scale, _G.scale)
+        love.graphics.draw(self.tileSheet, self.quad[87],550, 340, 0, _G.scale, _G.scale)
 
         local mouseX = love.mouse.getX()
         local mouseY = love.mouse.getY()
 
-        local r = math.floor(mouseX / self.tileWidth) + 1
-        local c = math.floor(mouseY / self.tileHeight) + 1
 
     end
 

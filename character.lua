@@ -6,7 +6,7 @@ local quadMngr = require("quadManager")
 
 local const = require("const")
 
-local listCharacters = {}
+local listCharacters = {main = 0}
 
 function moduleCharacter.new()
 
@@ -16,7 +16,8 @@ function moduleCharacter.new()
         y = math.random(_G.screenHeight),
         vX = 0,
         vY = 0,
-        speed = 200,
+        speed = 400,
+        state = const.STATE.NONE,
         animSpeed = 0,
         width = 0,
         height = 0,
@@ -33,6 +34,7 @@ function moduleCharacter.new()
         watchDuration = nil,
         cooldown = 0.8,
         damageTimer = 10,
+        dammageDuration = 0.5,
         isDead = false,
         playedDeadAnim = false
     }
@@ -56,12 +58,11 @@ function moduleCharacter.create(pType)
 
     if pType == const.TYPE.SOLDIER then
 
-        character.vision = 100
+        character.vision = 200
         character.range = 55
         character.hp = 100
         character.inventory = {}
-        -- character.speed = 100
-
+        
     elseif pType == const.TYPE.ORC then
 
         character.vision = 100
@@ -93,16 +94,12 @@ function moduleCharacter.create(pType)
 
     end 
 
-    if character.type ~= const.TYPE.SOLDIER then
-
-        character.state = const.STATE.NONE
-    end
-
     table.insert(listCharacters, character)
+    
+
     return character
 
 end
-
 
 
 function moduleCharacter.list()
