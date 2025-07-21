@@ -58,7 +58,7 @@ function moduleCharacter.create(pType)
 
     if pType == const.TYPE.SOLDIER then
 
-        character.vision = 200
+        character.vision = 350
         character.range = 55
         character.hp = 100
         character.inventory = {}
