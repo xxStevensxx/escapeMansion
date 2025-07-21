@@ -39,7 +39,7 @@ function love.update(dt)
 end
 
 function love.draw()
-    if gs.currentState == const.GAME_STATE.STARTED then gs:started() gameState.draw() return end
+    if gs.currentState == const.GAME_STATE.STARTED then gs:started() gameState.draw() return end -- variable globale pour gameState instance
     love.graphics.push()
     -- gameState.draw()
     -- game.camera()

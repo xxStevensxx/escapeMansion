@@ -10,6 +10,7 @@ local obj = require("object")
 local mainCharAction = require("mainCharAction")
 local gameState = require("gameState")
 
+-- Liste des personnages et objets existants dans le jeu
 local listCharacters = char.list()
 local listObject = obj.list()
 local mainCharacter
@@ -17,7 +18,7 @@ local debug = false
 local sndClone = util.sndClone()
 
 
-
+-- Crée une nouvelle instance de jeu
 function moduleGame.new() 
 
     local game = {}
@@ -27,10 +28,12 @@ function moduleGame.new()
 end
 
 
+-- Lance la partie et retourne l’objet game avec ses méthodes
 function moduleGame.play()
 
    local game = moduleGame.new()
    
+    -- Recherche le personnage principal (soldier) dans la liste
    for __, char in ipairs(listCharacters) do
 
         if char.type == const.TYPE.SOLDIER then
@@ -42,20 +45,22 @@ function moduleGame.play()
    end
 
 
+   -- Placeholder pour état "started" du jeu
    function game:started()
 
-
+    -- TODO
 
    end
 
-
+   -- Placeholder pour pause du jeu
     function game:pause()
 
         --TODO
         
     end
 
-    
+
+    -- Fonction de spawn aléatoire de mobs
     function game:spawner(nbMob)
 
         for m = 1, nbMob do
@@ -85,7 +90,7 @@ function moduleGame.play()
 
     end
 
-
+   -- Mise à jour de l’animation pour tous les personnages
     function game:animation(listCharacters, dt)
 
         for c = 1, #listCharacters do 
@@ -99,7 +104,7 @@ function moduleGame.play()
 
                     if character.currentFrame >= character.quad[character.currentAnim].nbframe + 1 then
 
-                        -- recupere la derniere frame de l'animation
+                        -- Dernière frame de l'animation mort affichée
                         character.currentFrame = character.quad[character.currentAnim].nbframe
                         character.playedDeadAnim = true
 
@@ -109,6 +114,7 @@ function moduleGame.play()
 
             else
 
+                -- Animation boucle normalement
                 character.currentFrame = character.currentFrame + character.quad[character.currentAnim].animSpeed * dt
                 
                 if character.currentFrame >= character.quad[character.currentAnim].nbframe + 1 then
@@ -122,7 +128,7 @@ function moduleGame.play()
 
     end
 
-
+   -- Affiche la vie du personnage sous forme de coeurs a deplacer dans le gui 
     function game:life(character)
 
         local hearthWidth, hearthHeight = const.SPRITE.LEFT_HEART:getDimensions()
@@ -154,27 +160,7 @@ function moduleGame.play()
     end
 
 
-    function game:mainCharacterAction()
-
-        function pickUp()
-            --TODO
-        end
-
-
-        function bowShoot(mainCharacter, mobs)
-
-
-        end
-
-
-        function swordAttack()
-            --TODO
-        end
-
-
-    end
-
-
+    -- Contrôle du personnage principal avec les touches
     function game:controller(character, dt)
 
         if not character.isDead then
@@ -234,7 +220,7 @@ function moduleGame.play()
 
     end
 
-
+   -- Gestion des touches pressées
     function game:keypressed(key, character) 
 
 
@@ -268,7 +254,7 @@ function moduleGame.play()
 
     end
         
-
+   -- Affiche tous les personnages
     function game:drawCharacters(listCharacters, listObject)
 
         for c = 1, #listCharacters do
@@ -281,7 +267,7 @@ function moduleGame.play()
 
     end
 
-
+   -- Affichage debug (informations détaillées)
     function game:debug(listCharacters)
 
         for c = 1, #listCharacters do 
@@ -335,7 +321,7 @@ function moduleGame.play()
 
 end
 
-
+-- Gestion des collisions avec les bords de l’écran apres a gerer avec les tuiles 
  function moduleGame.collider(character)
 
     local colision = false
@@ -372,7 +358,7 @@ end
 
 end
 
-
+-- Fonction pour centrer la caméra sur le personnage principal
 function moduleGame.camera()
     
     local cam = {
@@ -392,6 +378,7 @@ function moduleGame.keypressed(key)
     game:keypressed(key, mainCharacter)
 end
 
+-- Chargement initial du jeu
 function moduleGame.load()
     gameState.load()
     gs = gameState.getInstance()
@@ -403,12 +390,14 @@ function moduleGame.load()
     mainCharAction = mainCharAction.new()
 end
 
+-- Mise à jour du jeu à chaque frame
 function moduleGame.update(dt)
     gameState.update(dt)
     game:controller(mainCharacter, dt)
     mainCharAction.update(listCharacters, mainCharacter, dt)
 end
 
+-- Dessin de tous les éléments du jeu à chaque frame
 function moduleGame.draw()
     gameState.draw()
     game:drawCharacters(listCharacters)

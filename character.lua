@@ -8,6 +8,7 @@ local const = require("const")
 
 local listCharacters = {main = 0}
 
+-- Fonction pour créer un nouveau personnage avec des valeurs par défaut
 function moduleCharacter.new()
 
     local character = {
@@ -44,6 +45,7 @@ function moduleCharacter.new()
 end
 
 
+-- Fonction de création d'un personnage selon son type (ex : SOLDIER, ORC)
 function moduleCharacter.create(pType)
 
     local character = moduleCharacter.new()
@@ -88,12 +90,14 @@ function moduleCharacter.create(pType)
     end
 
 
+    -- Chargement des animations dans la table quad
      for animName, anim in pairs(qd.anim) do
 
         character.quad[animName] = anim
 
     end 
 
+    -- Ajout du personnage à la liste globale des personnages
     table.insert(listCharacters, character)
     
 
@@ -102,17 +106,16 @@ function moduleCharacter.create(pType)
 end
 
 
+-- Fonction retournant la liste complète des personnages
 function moduleCharacter.list()
 
     return listCharacters
 
 end
 
+-- Fonction de chargement (exemple : crée un soldat au démarrage)
 function moduleCharacter.load()
     local soldier = moduleCharacter.create(const.TYPE.SOLDIER)
-end
-
-function moduleCharacter.draw()
 end
 
 

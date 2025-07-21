@@ -5,6 +5,7 @@ local quadManager_metaTable = {__index = moduleQuadManager}
 local const = require("const")
 
 
+-- Initialise les propriétés du quad en fonction du type (orc, soldat, etc.)
 local function initializeType(quad, pType)
 
     local quadLine, quadColumn
@@ -16,6 +17,7 @@ local function initializeType(quad, pType)
 
         quad.spriteSheet = const.SPRITE.ORC
 
+        -- Assignation des animations aux indices
         quad.anim[0] = quad.anim.idle
         quad.anim[1] = quad.anim.walk
         quad.anim[2] = quad.anim.attack_one
@@ -23,7 +25,7 @@ local function initializeType(quad, pType)
         quad.anim[4] = quad.anim.dammage
         quad.anim[5] = quad.anim.death
 
-
+        -- Définition du nombre de frames pour chaque animation
         quad.anim.idle.nbframe = 6
         quad.anim.walk.nbframe = 8
         quad.anim.attack_one.nbframe = 6
@@ -31,6 +33,8 @@ local function initializeType(quad, pType)
         quad.anim.dammage.nbframe = 4
         quad.anim.death.nbframe = 4
 
+
+        -- Vitesse d'animation égale au nombre de frames 
         quad.anim.idle.animSpeed = quad.anim.idle.nbframe
         quad.anim.walk.animSpeed = quad.anim.walk.nbframe
         quad.anim.attack_one.animSpeed = quad.anim.attack_one.nbframe
@@ -145,6 +149,7 @@ local function initializeType(quad, pType)
 
 end
 
+-- Crée un nouvel objet QuadManager avec ses propriétés initialisées
 function moduleQuadManager.new()
 
     local quadManager = {
@@ -171,6 +176,7 @@ function moduleQuadManager.new()
         
     }
 
+        -- Assigne les animations aux indices pour un accès facile
         quadManager.anim[0] = quadManager.anim.idle
         quadManager.anim[1] = quadManager.anim.walk
         quadManager.anim[2] = quadManager.anim.attack_one
@@ -184,10 +190,12 @@ function moduleQuadManager.new()
 end
 
 
+-- Crée un quad pour un type donné en découpant la spritesheet en fonction des frames et animations
 function moduleQuadManager.createQuad(pType)
 
     local quad = moduleQuadManager.new()
 
+    -- Initialise les propriétés du quad selon le type (anim, spriteSheet, etc.)
     initializeType(quad, pType)
 
         local spriteWidth, spriteHeight = quad.spriteSheet:getDimensions()
@@ -195,18 +203,20 @@ function moduleQuadManager.createQuad(pType)
         quad.heightQuad = spriteHeight / quad.column
 
 
+        -- Parcours ligne/colonne pour créer les quads correspondant à chaque frame
         for spriteLine = 0, quad.line -1 do
-
 
             for spriteColumn = 0, quad.column -1 do
 
                 if pType ~= const.MAP.MANSION then
 
+                    -- Pour les personnages, on ajoute les quads dans la table d'animation correspondante
                     local qd = love.graphics.newQuad(spriteLine * quad.widthQuad, spriteColumn * quad.heightQuad, quad.widthQuad, quad.heightQuad, quad.spriteSheet:getDimensions())
                     table.insert(quad.anim[spriteColumn], qd)
 
                 else
-                    
+
+                    -- Pour la map, on stocke les quads dans une table map distincte
                     local qd = love.graphics.newQuad(spriteLine * quad.widthQuad , spriteColumn * quad.heightQuad, quad.widthQuad, quad.heightQuad, quad.spriteSheet:getDimensions())
                     table.insert(quad.map, qd)
 

@@ -6,7 +6,7 @@ local listObjects = {}
 
 local const = require("const")
 
-
+-- Crée une nouvelle instance d'objet avec position aléatoire et propriétés par défaut
 function moduleObject.new()
 
         local object = {
@@ -25,6 +25,7 @@ function moduleObject.new()
 end
 
 
+-- Crée un objet spécifique (arc ou épée) avec ses images et propriétés associées
 function moduleObject.create(obj)
 
     local object = moduleObject.new()
@@ -57,11 +58,12 @@ function moduleObject.create(obj)
 
 end
 
-
+-- Renvoie la liste actuelle des objets présents dans le jeu
 function moduleObject.list()
     return listObjects
 end
 
+-- Gère la récupération de l'objet par le personnage quand la touche "E" est pressée
 local function pickUp(character, object)
 
     if love.keyboard.isDown("e") then
@@ -75,6 +77,7 @@ local function pickUp(character, object)
 end
 
 
+-- Vérifie si le personnage est proche d'un objet détectable pour afficher l'objet et permettre la récupération
 function moduleObject.nextToObject(character, listObject)
 
         for o = 1, #listObject do
@@ -97,7 +100,7 @@ function moduleObject.nextToObject(character, listObject)
 
 end
 
-
+-- Dessine tous les objets non ramassés sur la carte avec leur image respective
 function moduleObject.drawObject(listObject)
 
     for o = 1, #listObject do
@@ -114,17 +117,15 @@ function moduleObject.drawObject(listObject)
 
 end
 
-
+-- Initialise les objets de départ (arc et épée) à décaler dans un autre module
 function moduleObject.load()
     local bow = moduleObject.create(const.OBJECT.BOW)
     local sword = moduleObject.create(const.OBJECT.SWORD)
 
 end
 
-function moduleObject.update(dt)
-end
 
-
+-- Dessine tous les objets présents dans la liste
 function moduleObject.draw()
     moduleObject.drawObject(listObjects)
 end

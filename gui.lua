@@ -14,6 +14,7 @@ local menu
 local playGroup 
 
 
+-- Création d'un groupe (contient des éléments)
 function moduleGui.new()
 
     local group = {
@@ -24,7 +25,7 @@ function moduleGui.new()
 
 end
 
-
+-- Création d'un groupe avec méthodes pour gérer les éléments
 function moduleGui.newGroup()
 
     local group = moduleGui.new()
@@ -77,6 +78,7 @@ function moduleGui.newGroup()
 end
 
 
+-- Création d'un élément de base avec position
 function moduleGui.newElement(pX, pY)
 
     local element = {
@@ -98,7 +100,7 @@ function moduleGui.newElement(pX, pY)
 
 end
 
-
+-- Création d'un panneau (rectangle ou image) avec gestion des événements
 function moduleGui.newPanel(pX, pY, pWidth, pHeight, pColor)
 
     local panel = moduleGui.newElement(pX, pY)
@@ -134,6 +136,7 @@ function moduleGui.newPanel(pX, pY, pWidth, pHeight, pColor)
     end
 
 
+    -- Vérifie si la souris est sur le panneau (hover) pas appliquer encore
     function panel:updatePanel(dt)
 
         local mouseX, mouseY = love.mouse.getPosition()
@@ -196,7 +199,7 @@ function moduleGui.newPanel(pX, pY, pWidth, pHeight, pColor)
 
 end
 
-
+-- Création d'un élément texte, étend un panel
 function moduleGui.newText(pX, pY, pWidth, pHeight, pHalign, pValign, pFont, pText, pColor)
 
     local text = moduleGui.newPanel(pX, pY, pWidth, pHeight, pColor)
@@ -249,7 +252,7 @@ function moduleGui.newText(pX, pY, pWidth, pHeight, pHalign, pValign, pFont, pTe
 
 end
 
-
+-- Ajoute plusieurs options textuelles à un groupe dans un panel
 function moduleGui.drawOptions(pOptions, pGroup, pPanel)
 
     local options = pOptions
@@ -271,7 +274,7 @@ function moduleGui.drawOptions(pOptions, pGroup, pPanel)
 end
 
 
---getters 
+-- Getters pour accéder aux groupes
 function moduleGui.getStartedGroup()
     return startedGroup
 end
@@ -293,6 +296,7 @@ function moduleGui.getGameoverGroup()
 end
 
 
+-- Chargement initial des groupes et éléments
 function moduleGui.load()
 
     startedGroup = moduleGui.newGroup()
@@ -323,9 +327,11 @@ function moduleGui.load()
     -- startedGroup:addElement(startedPanel)
     -- startedGroup:addElement(tutoText)
 
+    
+    -- Ajout des panneaux aux groupes
     playGroup:addElement(playPanel)
     pauseGroup:addElement(pausePanel)
-    restartGroup:addElement(parestartPanelnel)
+    restartGroup:addElement(restartPanelnel)
     quitGroup:addElement(quitPanel)
     gameoverGroup:addElement(gameoverPanel)
 

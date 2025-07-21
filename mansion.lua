@@ -6,7 +6,7 @@ local map = require("mansion_map")
 
 local listRooms = {}
 
---Generation de salle et leurs etats
+-- Génération d'une salle avec ses coordonnées et état initial (portes fermées)
 local function roomGenerator(pRow, pColumn)
 
     local room = {
@@ -25,6 +25,7 @@ local function roomGenerator(pRow, pColumn)
 end
 
 
+-- Création d'une nouvelle instance de manoir avec paramètres de base
 function modulMansion.new()
 
     local mansion = {
@@ -47,6 +48,7 @@ function modulMansion.new()
 end
 
 
+-- Création et gestion d'un manoir avec génération des pièces et de leur état
 function modulMansion.createMansion()
 
     local mansion = modulMansion.new()
@@ -54,11 +56,12 @@ function modulMansion.createMansion()
 
     function mansion:mapGenerator()
 
-        --remet la miniMap à zero 
+        -- Réinitialise la miniMap et la liste des salles
         self.miniMap = {}
-        -- remetons les salles à zero aussi
         listRooms = {}
 
+
+        -- Génère la grille des salles (miniMap)
         for nRow = 1, self.nbRow do
 
             self.miniMap[nRow] = {}
@@ -71,7 +74,7 @@ function modulMansion.createMansion()
         end
     end
 
-    -- selectionne une salle de depart au hasard sur la minimap
+    -- Sélectionne aléatoirement une salle de départ dans la miniMap et l'ouvre
     function mansion:setRoomStart()
 
         local randomRow = math.random(1, self.nbRow)
@@ -83,16 +86,17 @@ function modulMansion.createMansion()
     end
 
 
-    --creer un chemin de salle aleatoire dans le donjon
+    -- Crée un chemin aléatoire de salles ouvertes dans le manoir
     function mansion:RandomizeRoomMansion(pNbRooms)
 
-        --securité si toutes les salles sont ouverte et que plus aucune salle est placable on evite la boucle infini
+        -- Evite boucle infinie en limitant les tentatives
         local maxAttempt = 0
 
         -- on commence à partir de la salle de depart
          table.insert(listRooms, self.roomStart)
-        -- nb de salle souhaité à modifier selon difficulté souhaité
 
+
+        -- Tant qu'on a pas atteint le nombre souhaité de salles ouvertes
         while #listRooms < pNbRooms and maxAttempt < 150 do
 
             maxAttempt = maxAttempt + 1
@@ -105,6 +109,7 @@ function modulMansion.createMansion()
 
             local direction = math.random(1, 4)
 
+            -- Selon la direction, tente d'ouvrir une nouvelle salle adjacente
             --haut
             if direction == 1 and nRow > 1 then
 
@@ -161,6 +166,8 @@ function modulMansion.createMansion()
 
     end
 
+
+    -- Dessine la miniMap avec les salles et leurs portes
     function mansion:draw()
 
         local x = 5
@@ -168,26 +175,25 @@ function modulMansion.createMansion()
 
         for nRow = 1, self.nbRow do 
             
-            --remet x a 5 vu qu'on deplace sa position en fonction du precedent rectangle
-            x = 5
+            x = 5 -- Reset position x à chaque nouvelle ligne
             
             for nColumn = 1, self.nbColumn do
 
                 if self.miniMap[nRow][nColumn].open and self.miniMap[nRow][nColumn] == self.miniMap[self.roomStart.row][self.roomStart.column]  then
 
-                    love.graphics.setColor(0, 1, 0)
+                    love.graphics.setColor(0, 1, 0)  -- salle de départ en vert
 
                 elseif self.miniMap[nRow][nColumn].open then
 
-                    love.graphics.setColor(1, 1, 1)
+                    love.graphics.setColor(1, 1, 1) -- salle ouverte en blanc
 
                 elseif not self.miniMap[nRow][nColumn].open then
 
-                    love.graphics.setColor(0.3, 0.3, 0.3)
+                    love.graphics.setColor(0.3, 0.3, 0.3) -- salle fermée en gris foncé
 
                 end                               
 
-                -- on dessine les portes
+                -- Dessine les portes présentes sur la salle
                 if self.miniMap[nRow][nColumn].doorUp then
                     love.graphics.rectangle("fill", x + (self.width / 2) - 5 , y - (self.height / 2) + 5, 10, 10)
                 end
@@ -201,12 +207,15 @@ function modulMansion.createMansion()
                     love.graphics.rectangle("fill", x - 5 , y + (self.height / 2) -  5 , 10, 10)
                 end
 
+                -- Dessine la salle elle-même
                 love.graphics.rectangle("fill", x , y, self.width, self.height)
-                -- lui met une position en fonction du precedent rectangle
+
+                -- Décale la position x pour la prochaine salle sur la même ligne
                 x = x + self.width + self.spaceBetween
 
             end
-            -- lui met une position en fonction du precedent rectangle
+
+            -- Décale la position y pour la prochaine ligne de salles
             y = y + self.height + self.spaceBetween
             
         end
@@ -216,6 +225,7 @@ function modulMansion.createMansion()
     
 end
 
+-- Initialise et génère le manoir complet au lancement
 function modulMansion.load()
     ms = modulMansion.createMansion()
     ms:mapGenerator()
@@ -225,12 +235,14 @@ function modulMansion.load()
 end
 
 
+-- Dessine la miniMap et la map principale
 function modulMansion.draw()
     ms:draw()
     map.draw(listRooms)
 end
 
 
+-- Recharge un nouveau manoir si la touche espace est pressée à décaler dans le gui restart
 function modulMansion.keypressed(key)
 
     if key == "space" then

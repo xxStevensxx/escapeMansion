@@ -1,6 +1,6 @@
 local const = {
 
-    --TYPE
+    -- Types de personnages ou entités du jeu
     TYPE = {
         
         ARMORED_SKELETON = "armored_skeleton",
@@ -9,12 +9,12 @@ local const = {
         SOLDIER = "soldier",
     },
 
-    -- MAP
+    -- Maps disponibles dans le jeu
     MAP = {
         MANSION = "mansion",
     },
 
-    --IMAGE PATH`
+    -- Chemins vers les images (sprites) utilisées dans le jeu
     SPRITE = {
 
         ORC = love.graphics.newImage("assets/images/Orc.png"),
@@ -30,7 +30,7 @@ local const = {
     },
 
 
-    --STATES 
+    -- États possibles d’un personnage
     STATE = {
 
         NONE = "none",
@@ -48,7 +48,7 @@ local const = {
 
     },
 
-    -- GAME STATE
+    -- États globaux du jeu (menus, phases)
     GAME_STATE = {
 
         STARTED = "started",
@@ -60,7 +60,7 @@ local const = {
 
     },
 
-    -- animation
+    -- Types d’animation des personnages
     ANIM = {
 
         IDLE = "idle",
@@ -75,13 +75,13 @@ local const = {
 
     },
 
-    --target
+    -- Cibles possibles (actuellement une seule valeur)
     TARGET = {
 
         NONE = "none",
     },
 
-    -- sound
+    -- Sons utilisés dans le jeu
     SOUND = {
         DAMMAGE_THREE = love.audio.newSource("assets/sounds/Damage3.wav", "static"),
         DAMMAGE_FOUR = love.audio.newSource("assets/sounds/Damage4.wav", "static"),
@@ -94,7 +94,7 @@ local const = {
     },
 
 
-    --OBJECT
+    -- Objets du jeu (armes)
     OBJECT = {
         BOW = "bow",
         ARROW = "arrow",
@@ -102,7 +102,7 @@ local const = {
     },
 
 
-
+    -- Textes affichés dans le jeu (ex : tutoriels, options de menu)
     TEXT = {
 
         TUTO_TEXT = "Bienvenue dans une Version Pre-Alpha de Mansion Escape appuyez sur une touche pour demmarrer",
@@ -110,14 +110,15 @@ local const = {
         PAUSE_OPTIONS = {"Reprendre", "Quitter"},
         STARTED_OPTIONS = {"Start"},
 
+        -- Alignements pour le texte (seulement center pour l’instant)
         ALIGN = {
 
             CENTER = "center",
-            --left right ect...
+            -- d’autres comme left, right peuvent être ajoutés ici
         },
     },
 
-
+    -- Polices utilisées dans le jeu
     FONT = {
 
         KEN = love.graphics.newFont("assets/font/kenvector_future_thin.ttf")

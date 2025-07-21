@@ -7,7 +7,3 @@ function love.conf(conf)
     conf.window.fullscreen = false
 
 end
-
-
-    -- conf.window.width = 4096
-    -- conf.window.height = 1936
