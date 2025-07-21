@@ -167,11 +167,10 @@ function moduleStateMachine.run()
                     if character.cooldown <= 0 then
 
                         character.currentAnim = const.ANIM.ATTACK_TWO
+                        mainCharacter.currentAnim = const.ANIM.DAMMAGE                        
+                        mainCharacter.hp = mainCharacter.hp - 14
+                        const.SOUND.DAMMAGE_FOUR:play()
 
-                        mainCharacter.currentAnim = const.ANIM.DAMMAGE
-                        mainCharacter.hp = mainCharacter.hp - 7
-
-                        -- const.SOUND.DAMMAGE_FOUR:play()
                         character.cooldown = 1
 
                     end
@@ -182,20 +181,14 @@ function moduleStateMachine.run()
                     character.cooldown = util.timer(character.cooldown, dt)
 
                     if character.cooldown <= 0 then
-
-                        character.currentAnim = const.ANIM.ATTACK_ONE
-
+                        
                         mainCharacter.damageTimer = util.timer(mainCharacter.damageTimer, dt)
+                        
+                        character.currentAnim = const.ANIM.ATTACK_ONE
+                        mainCharacter.currentAnim = const.ANIM.DAMMAGE
+                        mainCharacter.hp = mainCharacter.hp - 7
+                        const.SOUND.DAMMAGE_FIVE:play()
 
-                        -- if mainCharacter.damageTimer > 0 then
-
-                        
-                        -- end
-                        
-                        mainCharacter.hp = mainCharacter.hp - 3
-                        
-                        -- const.SOUND.SWORD_FOUR:play()
-                        -- const.SOUND.DAMMAGE_THREE:play()
                         character.cooldown = 1
                         
                         
@@ -217,6 +210,44 @@ function moduleStateMachine.run()
              
             end
 
+
+            if character.state == const.STATE.DAMMAGE then
+
+                character.currentAnim = const.ANIM.DAMMAGE
+                character.dammageDuration = util.timer(character.dammageDuration, dt)
+                
+                if character.dammageDuration <= 0 then
+                    
+                    character.state = const.STATE.WALK
+                    character.hp = character.hp - 15
+                    const.SOUND.DAMMAGE_FIVE:play()
+                    character.dammageDuration = 0.5
+
+                end
+
+
+                if character.hp <= 0 then
+
+                    character.state = const.STATE.DEAD
+
+                end
+
+            end
+
+
+            if character.state == const.STATE.DEAD then
+
+                if not character.isDead then
+
+                    character.currentAnim = const.ANIM.DEAD
+                    character.isDead = true
+                    character.playedDeadAnim = false
+                    character.target = nil
+
+                end
+
+            end
+
             -- ce n'est pas un ETAT mais un etat intermediaire si le hero se fait tuer lors d'une attaque
             if mainCharacter.hp <= 0 and not mainCharacter.isDead then
 
@@ -224,10 +255,10 @@ function moduleStateMachine.run()
 
                     local character = self.listCharacters[c]
             
-                    if character.target ~= const.TARGET.NONE then
+                    if character.target ~= const.TARGET.NONE and not character.isDead then
                         character.currentAnim = const.ANIM.ATTACK_ONE
 
-                    else
+                    elseif not character.isDead then
                         
                         character.currentAnim = const.ANIM.IDLE
 
@@ -251,12 +282,6 @@ function moduleStateMachine.run()
 
             end
 
-            -- ETAT si le mob meurt
-            if character.state == const.STATE.DEAD then
-                -- on joue l'animation on supprime l'element de la liste apres un moment histoire de laisser le cadavre sur le sol un moment
-                -- supprimer a reculons dans le tableau
-
-            end
 
         end
 
@@ -270,7 +295,7 @@ function moduleStateMachine.run()
 end
 
 function moduleStateMachine.load()
-    game.load()
+    -- game.load()
     stateMachine = moduleStateMachine.run()
 end
 

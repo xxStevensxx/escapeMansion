@@ -7,12 +7,15 @@ local char = require("character")
 local const = require("const")
 local util = require("utils")
 local obj = require("object")
+local mainCharAction = require("mainCharAction")
+local gameState = require("gameState")
 
 local listCharacters = char.list()
 local listObject = obj.list()
 local mainCharacter
 local debug = false
 local sndClone = util.sndClone()
+
 
 
 function moduleGame.new() 
@@ -38,7 +41,18 @@ function moduleGame.play()
         
    end
 
+
+   function game:started()
+
+
+
+   end
+
+
     function game:pause()
+
+        --TODO
+        
     end
 
     
@@ -147,8 +161,9 @@ function moduleGame.play()
         end
 
 
-        function bowShoot()
-            --TODO
+        function bowShoot(mainCharacter, mobs)
+
+
         end
 
 
@@ -199,7 +214,20 @@ function moduleGame.play()
 
 
             if love.keyboard.isDown("b") then
-                character.currentAnim = const.ANIM.ATTACK_THREE
+                
+                for weapon = 1, #character.inventory do
+
+                    local weapon = character.inventory[weapon].type
+
+                    if weapon == const.OBJECT.BOW then
+
+                        character.currentAnim = const.ANIM.ATTACK_THREE
+                        mainCharAction.shoot(listCharacters, mainCharacter, dt)
+
+                    end
+
+                end
+
             end
 
         end
@@ -217,8 +245,27 @@ function moduleGame.play()
             debug = not debug
 
             return debug
+        end
+
+
+        if gs.currentState == const.GAME_STATE.STARTED then
+
+            if key then
+
+                gs.currentState = const.GAME_STATE.PLAY 
+                gs:play()
+
+            end
 
         end
+
+
+        if key == "escape" then
+
+            gs:pause()
+
+        end
+
     end
         
 
@@ -228,7 +275,7 @@ function moduleGame.play()
 
             local character = listCharacters[c]
 
-            love.graphics.draw(character.spriteSheet, character.quad[character.currentAnim][math.floor(character.currentFrame)], character.x, character.y, 0, 3, 3, character.offsetX, character.offsetY)
+            love.graphics.draw(character.spriteSheet, character.quad[character.currentAnim][math.floor(character.currentFrame)], character.x, character.y, 0, _G.scale, _G.scale, character.offsetX, character.offsetY)
 
         end
 
@@ -260,7 +307,11 @@ function moduleGame.play()
                 love.graphics.circle("line", character.x, character.y, character.range)
                 love.graphics.setColor(1,1,1)
                 love.graphics.rectangle("fill", character.x, character.y, 5, 5)
-                love.graphics.print("cooldwon: "..tostring(character.cooldown), character.x + 20, character.y + 20)
+                love.graphics.print("cooldown: "..tostring(character.cooldown), character.x + 20, character.y + 20)
+                love.graphics.print("dammageDur: "..tostring(character.dammageDuration), character.x + 30, character.y + 30)
+                love.graphics.print("HP : "..tostring(character.hp), character.x , character.y - 150)
+
+
 
         end
 
@@ -322,26 +373,49 @@ end
 end
 
 
+function moduleGame.camera()
+    
+    local cam = {
+        x = 0,
+        y = 0
+    }
+
+    cam.x = mainCharacter.x - _G.screenWidth / 2
+    cam.y = mainCharacter.y - _G.screenHeight / 2
+
+    love.graphics.translate(-cam.x, -cam.y)
+
+end
+
+
 function moduleGame.keypressed(key)
     game:keypressed(key, mainCharacter)
 end
 
 function moduleGame.load()
+    gameState.load()
+    gs = gameState.getInstance()
+    const.SOUND.MUSIC:setLooping(true)
+    const.SOUND.MUSIC:play()
     game = moduleGame.play()
-    game:spawner(1)
+    game:spawner(3)
     obj.load()
+    mainCharAction = mainCharAction.new()
 end
 
 function moduleGame.update(dt)
+    gameState.update(dt)
     game:controller(mainCharacter, dt)
+    mainCharAction.update(listCharacters, mainCharacter, dt)
 end
 
 function moduleGame.draw()
-
+    gameState.draw()
     game:drawCharacters(listCharacters)
     obj.draw()
     obj.nextToObject(mainCharacter, listObject)
     game:life(mainCharacter)
+    mainCharAction.draw()
 
     if debug == true then
         game:debug(listCharacters)
