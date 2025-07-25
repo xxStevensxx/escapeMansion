@@ -26,14 +26,12 @@ function love.load()
     mansion.load()
     stateMachine.load()
     game.load()
-    -- gameState.load()
-    gs = gameState.getInstance()
+    gameState.load()
     _G.scale = util.scale(3)
 end
 
 function love.update(dt)
     if gs.currentState == const.GAME_STATE.STARTED then gs:started()  return end
-    gameState.update(dt)
     game.update(dt)
     stateMachine.update(dt)
 end
@@ -41,11 +39,9 @@ end
 function love.draw()
     if gs.currentState == const.GAME_STATE.STARTED then gs:started() gameState.draw() return end -- variable globale pour gameState instance
     love.graphics.push()
-    -- gameState.draw()
     -- game.camera()
-    -- mansion.draw()
+    mansion.draw()
     game.draw()
-    -- stateMachine.draw()
     love.graphics.pop()
 end
 

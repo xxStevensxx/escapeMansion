@@ -128,40 +128,24 @@ function moduleGame.play()
 
     end
 
-   -- Affiche la vie du personnage sous forme de coeurs a deplacer dans le gui 
-    function game:life(character)
-
-        local hearthWidth, hearthHeight = const.SPRITE.LEFT_HEART:getDimensions()
-        local posX = _G.screenWidth - 400
-        local posY = 30
-    
-        for pv = 1, character.hp do
-
-            local impair = pv % 2 ~= 0
-
-            if impair then
-
-                love.graphics.draw(const.SPRITE.LEFT_HEART, posX , posY)
-
-            else
-
-                love.graphics.draw(const.SPRITE.RIGHT_HEART, posX, posY)
-
-            end
-
-            if impair == false then
-
-                posX = posX + hearthWidth / 4
-
-            end
-
-        end
-        
-    end
-
-
     -- Contrôle du personnage principal avec les touches
     function game:controller(character, dt)
+
+        -- Ne pas rien faire d'autre si le personnage est occupé dans une action
+        if character.isBusy then
+
+                character.cooldown = util.timer(character.cooldown, dt)
+
+                if character.cooldown <= 0 then
+
+                    character.isBusy = false
+                    character.currentAnim = const.ANIM.IDLE
+
+                end
+
+            return -- bloquer les mouvements pendant l’attaque
+
+        end
 
         if not character.isDead then
 
@@ -199,23 +183,6 @@ function moduleGame.play()
             end
 
 
-            if love.keyboard.isDown("b") then
-                
-                for weapon = 1, #character.inventory do
-
-                    local weapon = character.inventory[weapon].type
-
-                    if weapon == const.OBJECT.BOW then
-
-                        character.currentAnim = const.ANIM.ATTACK_THREE
-                        mainCharAction.shoot(listCharacters, mainCharacter, dt)
-
-                    end
-
-                end
-
-            end
-
         end
 
     end
@@ -233,6 +200,29 @@ function moduleGame.play()
             return debug
         end
 
+        if key == "b" and not character.isBusy  then
+                
+                for weapon = 1, #character.inventory do
+
+                    local weapon = character.inventory[weapon].type
+
+                    if weapon == const.OBJECT.BOW then
+
+                        character.isBusy = true
+                        character.cooldown = 1
+
+                        character.currentAnim = const.ANIM.ATTACK_THREE
+                        mainCharAction.shoot(listCharacters, mainCharacter, dt)
+                        break
+
+
+                    end
+
+                end
+
+            end
+
+
 
         if gs.currentState == const.GAME_STATE.STARTED then
 
@@ -248,6 +238,7 @@ function moduleGame.play()
 
         if key == "escape" then
 
+            gs.currentState = const.GAME_STATE.PAUSE
             gs:pause()
 
         end
@@ -374,6 +365,37 @@ function moduleGame.camera()
 end
 
 
+-- Affiche la vie du personnage sous forme de coeurs a deplacer dans le gui 
+ function moduleGame.life(character)
+     local hearthWidth, hearthHeight = const.SPRITE.LEFT_HEART:getDimensions()
+     local posX = _G.screenWidth - 400
+     local posY = 30
+ 
+     for pv = 1, character.hp do
+
+         local impair = pv % 2 ~= 0
+
+         if impair then
+
+             love.graphics.draw(const.SPRITE.LEFT_HEART, posX , posY)
+
+         else
+
+             love.graphics.draw(const.SPRITE.RIGHT_HEART, posX, posY)
+
+         end
+
+         if impair == false then
+
+             posX = posX + hearthWidth / 4
+
+         end
+
+     end
+     
+ end
+
+
 function moduleGame.keypressed(key)
     game:keypressed(key, mainCharacter)
 end
@@ -382,8 +404,8 @@ end
 function moduleGame.load()
     gameState.load()
     gs = gameState.getInstance()
-    const.SOUND.MUSIC:setLooping(true)
-    const.SOUND.MUSIC:play()
+    -- const.SOUND.MUSIC:setLooping(true)
+    -- const.SOUND.MUSIC:play()
     game = moduleGame.play()
     game:spawner(3)
     obj.load()
@@ -403,8 +425,8 @@ function moduleGame.draw()
     game:drawCharacters(listCharacters)
     obj.draw()
     obj.nextToObject(mainCharacter, listObject)
-    game:life(mainCharacter)
     mainCharAction.draw()
+    moduleGame.life(mainCharacter)
 
     if debug == true then
         game:debug(listCharacters)

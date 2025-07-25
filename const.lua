@@ -27,6 +27,7 @@ local const = {
         ARROW = love.graphics.newImage("assets/images/Arrow.png"),
         SWORD = love.graphics.newImage("assets/images/sword.png"),
         MANSION = love.graphics.newImage("assets/images/Dungeon_Tileset.png"),
+        PANEL_ONE = love.graphics.newImage("/assets/images/panel2.png"),
     },
 
 
@@ -123,7 +124,17 @@ local const = {
 
         KEN = love.graphics.newFont("assets/font/kenvector_future_thin.ttf")
         
-    }
+    },
+
+
+    GROUP = {
+        startedGroup = "startedGroup",
+        pauseGroup = "pauseGroup",
+        restartGroup = "restartGroup",
+        quitGroup = "quitGroup",
+        gameoverGroup = "gameoverGroup",
+        playGroup = "playGroup",
+    },
 
 
 }

@@ -20,7 +20,7 @@
     function modulMainCharAction.shoot(listCharacters, mainCharacter)
         
         -- Ne pas tirer si le cooldown n’est pas terminé
-        if mainCharacter.cooldown > 0 then return end
+        -- if mainCharacter.cooldown > 0 then return end
 
             -- Jouer le son de tir d’arc
             const.SOUND.BOW_SHOOT:play()
@@ -40,9 +40,25 @@
                 -- Si la cible est dans la vision du personnage principal
                 if distance <= mainCharacter.vision then
 
-                    -- Calculer l’angle entre le personnage principal et la cible
-                    local angle = math.angle(mainCharacter.x, mainCharacter.y, target.x, target.y)
+                    local arrowSpeed = 800
 
+                     -- Estimation du temps que la flèche mettra à arriver sur sa cible
+                    local arrowFlyTime = distance / arrowSpeed
+
+                    local targetFuturPosX = target.x + target.vX * arrowFlyTime
+                    local targetFuturPosY = target.y + target.vY * arrowFlyTime
+
+                    
+                    -- Calculer l’angle entre le personnage principal et la cible
+                    if target.vX == 0  and target.vY == 0 then
+
+                        angle = math.angle(mainCharacter.x, mainCharacter.y, target.x, target.y)    
+
+                    else
+
+                        angle = math.angle(mainCharacter.x, mainCharacter.y, targetFuturPosX, targetFuturPosY)
+
+                    end
 
                     -- Créer une nouvelle flèche partant du personnage principal vers la cible
                     local arrow = {
@@ -50,7 +66,7 @@
                         x = mainCharacter.x,
                         y = mainCharacter.y,
                         angle = angle,
-                        speed = 800,
+                        speed = arrowSpeed,
                         image = const.SPRITE.ARROW
 
                     }

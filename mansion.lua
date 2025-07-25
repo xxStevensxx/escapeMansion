@@ -3,8 +3,10 @@ local modulMansion = {}
 local mansion_metaTable = {__index = modulMansion}
 
 local map = require("mansion_map")
+local grid = require("grid")
 
 local listRooms = {}
+local ms
 
 -- Génération d'une salle avec ses coordonnées et état initial (portes fermées)
 local function roomGenerator(pRow, pColumn)
@@ -36,7 +38,7 @@ function modulMansion.new()
         nbColumn = 5,
         spaceBetween = 10,
         miniMap = {},
-        map = {},
+        grid = {},
         roomStart = nil,
         
     }
@@ -116,9 +118,12 @@ function modulMansion.createMansion()
                 newRoom = self.miniMap[nRow -1][nColumn]
                 if newRoom.open == false then
                     room.doorUp = true
+                    room.grid = grid.MANSION.ROOM_ONE
                     newRoom.doorDown = true
                     newRoom.open = true
-                    table.insert(listRooms,newRoom)
+                    newRoom.grid = grid.MANSION.ROOM_ONE
+                     table.insert(listRooms,newRoom)
+
 
                 end
             
@@ -129,8 +134,10 @@ function modulMansion.createMansion()
                 if newRoom.open == false then
 
                     room.doorRight = true
+                    room.grid = grid.MANSION.ROOM_ONE
                     newRoom.doorLeft = true
                     newRoom.open = true
+                    newRoom.grid = grid.MANSION.ROOM_ONE
                     table.insert(listRooms,newRoom)
 
                 end
@@ -142,8 +149,10 @@ function modulMansion.createMansion()
                 if newRoom.open == false then
 
                     room.doorDown = true
+                    room.grid = grid.MANSION.ROOM_ONE
                     newRoom.doorUp = true
                     newRoom.open = true
+                    newRoom.grid = grid.MANSION.ROOM_ONE
                     table.insert(listRooms,newRoom)
 
                 end
@@ -155,8 +164,10 @@ function modulMansion.createMansion()
                 if newRoom.open == false then
 
                     room.doorLeft = true
+                    room.grid = grid.MANSION.ROOM_ONE
                     newRoom.doorRight = true
                     newRoom.open = true
+                    newRoom.grid = grid.MANSION.ROOM_ONE
                     table.insert(listRooms,newRoom)
                 end
 
@@ -170,15 +181,16 @@ function modulMansion.createMansion()
     -- Dessine la miniMap avec les salles et leurs portes
     function mansion:draw()
 
-        local x = 5
-        local y = 5
+        local x = 300
+        local y = 300
 
         for nRow = 1, self.nbRow do 
             
             x = 5 -- Reset position x à chaque nouvelle ligne
+            local count = 0
             
             for nColumn = 1, self.nbColumn do
-
+                
                 if self.miniMap[nRow][nColumn].open and self.miniMap[nRow][nColumn] == self.miniMap[self.roomStart.row][self.roomStart.column]  then
 
                     love.graphics.setColor(0, 1, 0)  -- salle de départ en vert
@@ -189,7 +201,8 @@ function modulMansion.createMansion()
 
                 elseif not self.miniMap[nRow][nColumn].open then
 
-                    love.graphics.setColor(0.3, 0.3, 0.3) -- salle fermée en gris foncé
+                    
+                     love.graphics.setColor(0.1, 0.1, 0.1) -- salle fermée en gris foncé
 
                 end                               
 
@@ -210,6 +223,12 @@ function modulMansion.createMansion()
                 -- Dessine la salle elle-même
                 love.graphics.rectangle("fill", x , y, self.width, self.height)
 
+                ------------------------------------------------------------------------------------------------
+
+                ------------------------------------------------------------------------------------------------
+
+                love.graphics.setColor(1, 1, 1)
+
                 -- Décale la position x pour la prochaine salle sur la même ligne
                 x = x + self.width + self.spaceBetween
 
@@ -220,6 +239,7 @@ function modulMansion.createMansion()
             
         end
     end
+    love.graphics.setColor(1, 1, 1)
 
     return mansion
     
@@ -228,17 +248,17 @@ end
 -- Initialise et génère le manoir complet au lancement
 function modulMansion.load()
     ms = modulMansion.createMansion()
-    ms:mapGenerator()
-    ms:setRoomStart()
+    ms:mapGenerator() 
+    ms:setRoomStart() 
     ms:RandomizeRoomMansion(5)  
-    map.load(listRooms)
+    map.load()
 end
 
 
 -- Dessine la miniMap et la map principale
 function modulMansion.draw()
+    map.draw(listRooms) 
     ms:draw()
-    map.draw(listRooms)
 end
 
 
@@ -247,6 +267,7 @@ function modulMansion.keypressed(key)
 
     if key == "space" then
 
+        ms = {}
         ms = modulMansion.createMansion()
         ms:mapGenerator()
         ms:setRoomStart()

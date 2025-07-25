@@ -33,7 +33,7 @@ function moduleCharacter.new()
         target = const.TARGET.NONE,
         currentAnim = const.ANIM.IDLE,
         watchDuration = nil,
-        cooldown = 0.8,
+        cooldown = 1,
         damageTimer = 10,
         dammageDuration = 0.5,
         isDead = false,
@@ -64,6 +64,7 @@ function moduleCharacter.create(pType)
         character.range = 55
         character.hp = 100
         character.inventory = {}
+        character.isBusy = false
         
     elseif pType == const.TYPE.ORC then
 

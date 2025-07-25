@@ -23,30 +23,32 @@ end
 function moduleGameState.state()
 
     local gameState = moduleGameState.new()
-
-
+    
     -- Affiche le groupe GUI du menu "started" si l'état courant est STARTED
     function gameState:started()
 
-        started = gui.getStartedGroup()
+        gui.hideGroupe()
+        started = gui.getGroup("startedGroup")
 
         if gs.currentState == const.GAME_STATE.STARTED then
 
             started:setVisible(true)
 
-        else
-
-            started:setVisible(false)
-
         end
-
 
     end
 
     -- Placeholder pour l'état "play"
     function gameState:play()
+
+        gui.hideGroupe()  
+        play = gui.getGroup("playGroup")
         
-        -- TODO
+        if gs.currentState == const.GAME_STATE.PLAY then
+
+            play:setVisible(true)
+
+        end
 
     end
 
@@ -74,6 +76,7 @@ function moduleGameState.state()
 
     -- Placeholder pour état game over
     function gameState:gameover()
+        
 
         --TODO
 
@@ -92,18 +95,13 @@ end
 
 -- Met à jour le GUI et les états du jeu chaque frame
 function moduleGameState.load()
-    gui.load()
     gs = moduleGameState.state()
+    gui.load()
 end
 
 -- Met à jour le GUI et les états du jeu chaque frame
 function moduleGameState.update(dt)
     gui.update(dt)
-    gs:started()
-    gs:pause()
-    gs:restart()
-    gs:quit()
-    gs:gameover()
 end
 
 -- Dessine le GUI

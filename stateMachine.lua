@@ -150,6 +150,8 @@ function moduleStateMachine.run()
 
                 character.x = character.x
                 character.y = character.y
+                character.vX = 0
+                character.vY = 0
                 currentVision = character.vision
 
                 -- Timer de recherche
@@ -189,7 +191,7 @@ function moduleStateMachine.run()
                         character.currentAnim = const.ANIM.ATTACK_TWO
                         mainCharacter.currentAnim = const.ANIM.DAMMAGE                        
                         mainCharacter.hp = mainCharacter.hp - 14
-                        const.SOUND.DAMMAGE_FOUR:play()
+                        -- const.SOUND.DAMMAGE_FOUR:play()
 
                         character.cooldown = 1
 
@@ -202,12 +204,12 @@ function moduleStateMachine.run()
 
                     if character.cooldown <= 0 then
                         
-                        mainCharacter.damageTimer = util.timer(mainCharacter.damageTimer, dt)
+                        -- mainCharacter.damageTimer = util.timer(mainCharacter.damageTimer, dt)
                         
                         character.currentAnim = const.ANIM.ATTACK_ONE
                         mainCharacter.currentAnim = const.ANIM.DAMMAGE
                         mainCharacter.hp = mainCharacter.hp - 7
-                        const.SOUND.DAMMAGE_FIVE:play()
+                        -- const.SOUND.DAMMAGE_FIVE:play()
 
                         character.cooldown = 1
                         
@@ -243,7 +245,7 @@ function moduleStateMachine.run()
                     
                     character.state = const.STATE.WALK -- retour à la marche après dommage
                     character.hp = character.hp - 15
-                    const.SOUND.DAMMAGE_FIVE:play()
+                    -- const.SOUND.DAMMAGE_FIVE:play()
                     character.dammageDuration = 0.5 -- reset timer dommage
 
                 end
@@ -320,7 +322,6 @@ function moduleStateMachine.run()
 end
 
 function moduleStateMachine.load()
-    -- game.load()
     stateMachine = moduleStateMachine.run()
 end
 
