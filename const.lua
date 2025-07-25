@@ -107,7 +107,7 @@ local const = {
     TEXT = {
 
         TUTO_TEXT = "Bienvenue dans une Version Pre-Alpha de Mansion Escape appuyez sur une touche pour demmarrer",
-        TUTO = {"Touche E = ramasser", "Touche A = Epée", "touche B = Arc", "Touche ESC = quitter", "Touche F1 = debug", "Appuyer sur une touche pour commencer"},
+        TUTO = {"Touche E = ramasser","avant de pouvoir utiliser les armes il faut les ramasser", "Touche A = Epée", "touche B = Arc", "Touche ESC = quitter", "Touche F1 = debug", "Appuyer sur une touche pour commencer"},
         PAUSE_OPTIONS = {"Reprendre", "Quitter"},
         STARTED_OPTIONS = {"Start"},
 

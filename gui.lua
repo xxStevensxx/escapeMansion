@@ -245,13 +245,13 @@ function moduleGui.drawOptions(pOptions, pGroup, pPanel)
     local group = pGroup
     local panel = pPanel
 
-    local spaceBetween = 35
+    local spaceBetween = 30
     local startY = panel.y 
 
 
         for i, label in pairs(options) do
 
-        local optionText = moduleGui.newText(panel.x, (panel.y - 50) + (i - 1) * spaceBetween, panel.width, panel.height, const.TEXT.ALIGN.CENTER, const.TEXT.ALIGN.CENTER, const.FONT.KEN, label)
+        local optionText = moduleGui.newText(panel.x, (panel.y - 100) + (i - 1) * spaceBetween, panel.width, panel.height, const.TEXT.ALIGN.CENTER, const.TEXT.ALIGN.CENTER, const.FONT.KEN, label)
         
         group:addElement(optionText)
         
