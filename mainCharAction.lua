@@ -40,7 +40,7 @@
                 -- Si la cible est dans la vision du personnage principal
                 if distance <= mainCharacter.vision then
 
-                    local arrowSpeed = 800
+                    local arrowSpeed = 1500
 
                      -- Estimation du temps que la flèche mettra à arriver sur sa cible
                     local arrowFlyTime = distance / arrowSpeed

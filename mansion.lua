@@ -8,6 +8,14 @@ local grid = require("grid")
 local listRooms = {}
 local ms
 
+--var a modifié pour le nb de salle souhaité lors de la generation, max = row * column
+local nb = 5
+
+-- a modifier si on veux un manoir plus grand donc potentiellement un nb de salle max augmenté (aucun rapport avec la gestion des salles)
+local row = 3
+local column = 5
+
+
 -- Génération d'une salle avec ses coordonnées et état initial (portes fermées)
 local function roomGenerator(pRow, pColumn)
 
@@ -23,9 +31,73 @@ local function roomGenerator(pRow, pColumn)
 
     }
 
-    return room
+
+local function addGrid(listRooms)
+
+    for _, room in ipairs(listRooms) do
+
+        local up = room.doorUp
+        local down = room.doorDown
+        local left = room.doorLeft
+        local right = room.doorRight
+
+        -- j'ai pas trouvé moins reberbatif...
+        if up and down and left and right then
+            -- Toutes les portes sont ouvertes
+
+        elseif up and down and left and not right then
+            -- Droite fermée, le reste ouvert
+
+        elseif up and down and not left and right then
+            -- Gauche fermée
+
+        elseif up and not down and left and right then
+            -- Bas fermé
+
+        elseif not up and down and left and right then
+            -- Haut fermé
+
+        elseif up and down and not left and not right then
+            -- Gauche et droite fermées
+
+        elseif up and not down and not left and right then
+            -- Bas et gauche fermées
+
+        elseif not up and not down and left and right then
+            -- Haut et bas fermées
+
+        elseif not up and down and not left and right then
+            -- Haut et gauche fermées
+
+        elseif not up and not down and not left and right then
+            -- Seule droite ouverte
+
+        elseif not up and down and not left and not right then
+            -- Seule bas ouverte
+
+        elseif up and not down and not left and not right then
+            -- Seule haut ouverte
+
+        elseif not up and not down and left and not right then
+            -- Seule gauche ouverte
+
+        elseif up and not down and left and not right then
+            -- Droite fermée, haut et gauche ouverts
+
+        elseif not up and down and left and not right then
+            -- Droite fermée, bas et gauche ouverts
+
+        elseif not up and not down and not left and not right then
+            -- Toutes les portes sont fermées
+
+        end
+
+    end
+
 end
 
+    return room
+end
 
 -- Création d'une nouvelle instance de manoir avec paramètres de base
 function modulMansion.new()
@@ -34,8 +106,8 @@ function modulMansion.new()
 
         width = 40,
         height = 20,
-        nbRow = 3,
-        nbColumn = 5,
+        nbRow = row,
+        nbColumn = column,
         spaceBetween = 10,
         miniMap = {},
         grid = {},
@@ -118,10 +190,11 @@ function modulMansion.createMansion()
                 newRoom = self.miniMap[nRow -1][nColumn]
                 if newRoom.open == false then
                     room.doorUp = true
-                    room.grid = grid.MANSION.ROOM_ONE
+                    room.grid = grid.MANSION.ROOM_SIX
                     newRoom.doorDown = true
                     newRoom.open = true
-                    newRoom.grid = grid.MANSION.ROOM_ONE
+                    newRoom.grid = grid.MANSION.ROOM_SIX
+                    --TODO
                      table.insert(listRooms,newRoom)
 
 
@@ -134,10 +207,10 @@ function modulMansion.createMansion()
                 if newRoom.open == false then
 
                     room.doorRight = true
-                    room.grid = grid.MANSION.ROOM_ONE
+                    room.grid = grid.MANSION.ROOM_SIX
                     newRoom.doorLeft = true
                     newRoom.open = true
-                    newRoom.grid = grid.MANSION.ROOM_ONE
+                    newRoom.grid = grid.MANSION.ROOM_SIX
                     table.insert(listRooms,newRoom)
 
                 end
@@ -149,10 +222,10 @@ function modulMansion.createMansion()
                 if newRoom.open == false then
 
                     room.doorDown = true
-                    room.grid = grid.MANSION.ROOM_ONE
+                    room.grid = grid.MANSION.ROOM_SIX
                     newRoom.doorUp = true
                     newRoom.open = true
-                    newRoom.grid = grid.MANSION.ROOM_ONE
+                    newRoom.grid = grid.MANSION.ROOM_SIX
                     table.insert(listRooms,newRoom)
 
                 end
@@ -164,10 +237,10 @@ function modulMansion.createMansion()
                 if newRoom.open == false then
 
                     room.doorLeft = true
-                    room.grid = grid.MANSION.ROOM_ONE
+                    room.grid = grid.MANSION.ROOM_SIX
                     newRoom.doorRight = true
                     newRoom.open = true
-                    newRoom.grid = grid.MANSION.ROOM_ONE
+                    newRoom.grid = grid.MANSION.ROOM_SIX
                     table.insert(listRooms,newRoom)
                 end
 
@@ -176,7 +249,6 @@ function modulMansion.createMansion()
         end
 
     end
-
 
     -- Dessine la miniMap avec les salles et leurs portes
     function mansion:draw()
@@ -201,7 +273,6 @@ function modulMansion.createMansion()
 
                 elseif not self.miniMap[nRow][nColumn].open then
 
-                    
                      love.graphics.setColor(0.1, 0.1, 0.1) -- salle fermée en gris foncé
 
                 end                               
@@ -221,7 +292,7 @@ function modulMansion.createMansion()
                 end
 
                 -- Dessine la salle elle-même
-                love.graphics.rectangle("fill", x , y, self.width, self.height)
+                love.graphics.rectangle("line", x , y, self.width, self.height)
 
                 ------------------------------------------------------------------------------------------------
 
@@ -245,12 +316,19 @@ function modulMansion.createMansion()
     
 end
 
+
+function modulMansion.getListRooms()
+
+    return listRooms
+
+end
+
 -- Initialise et génère le manoir complet au lancement
 function modulMansion.load()
     ms = modulMansion.createMansion()
     ms:mapGenerator() 
     ms:setRoomStart() 
-    ms:RandomizeRoomMansion(5)  
+    ms:RandomizeRoomMansion(nb)  
     map.load()
 end
 
@@ -271,7 +349,8 @@ function modulMansion.keypressed(key)
         ms = modulMansion.createMansion()
         ms:mapGenerator()
         ms:setRoomStart()
-        ms:RandomizeRoomMansion(5)
+        -- la logique empeche de tester avec une salle minimum 2 a cause du grid qui est initialisé apres pour la salle de depart
+        ms:RandomizeRoomMansion(nb)
         
          
     end

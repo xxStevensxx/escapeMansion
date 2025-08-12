@@ -3,6 +3,8 @@ local moduleGui = {}
 local gui_metaTable = {__index = moduleGui}
 
 local const = require("const")
+local character = require("character")
+local game = require("game")
 
 local groups = {}
 
@@ -238,6 +240,61 @@ function moduleGui.newText(pX, pY, pWidth, pHeight, pHalign, pValign, pFont, pTe
 
 end
 
+
+
+function moduleGui.life(character, pX, pY)
+
+    local life = moduleGui.newElement(pX, pY)
+    -- life.character = character
+
+    function life:drawLife()
+
+        if not self.visible then return end
+
+        local hearthWidth, hearthHeight = const.SPRITE.LEFT_HEART:getDimensions()
+
+        local posX = self.x
+        local posY = self.y
+
+        for pv = 1, character.hp do
+
+            local impair = pv % 2 ~= 0
+
+            if impair then
+
+                love.graphics.draw(const.SPRITE.LEFT_HEART, posX , posY)
+
+            else
+
+                love.graphics.draw(const.SPRITE.RIGHT_HEART, posX, posY)
+
+            end
+
+            if impair == false then
+
+                posX = posX + hearthWidth / 4
+
+            end
+
+        end
+
+    end
+
+    function life:draw()
+
+        if not self.visible then return end
+
+        self:drawLife()
+
+    end
+
+    
+    return life
+
+end
+
+
+
 -- Ajoute plusieurs options textuelles à un groupe dans un panel
 function moduleGui.drawOptions(pOptions, pGroup, pPanel)
 
@@ -283,31 +340,38 @@ end
 
 -- Chargement initial des groupes et éléments
 function moduleGui.load()
-
+    local mc = game.getMainCharacter()
+    
     groups.startedGroup = moduleGui.newGroup()
     groups.pauseGroup = moduleGui.newGroup()
     groups.restartGroup = moduleGui.newGroup()
     groups.quitGroup = moduleGui.newGroup()
     groups.gameoverGroup = moduleGui.newGroup()
     groups.playGroup = moduleGui.newGroup()
-
+    
     local startedPanel = moduleGui.newPanel((_G.screenWidth / 2) - 200, (_G.screenHeight / 2) - 150, 400, 300)
     local pausePanel = moduleGui.newPanel(0, 0, 400, 300)
     local restartPanel = moduleGui.newPanel(0, 0, 400, 300)
     local quitPanel = moduleGui.newPanel(0, 0, 400, 300)
     local gameoverPanel = moduleGui.newPanel(0, 0, 400, 300)
-    local playPanel = moduleGui.newPanel(0, 0, 600, 600)
+
+    local playPanel = moduleGui.newPanel(10, 100, 500, 100)
+    playPanel:setImage(const.SPRITE.PANEL_ONE)
+    
+
 
         -- Ajout des panneaux aux groupes
     groups.startedGroup:addElement(startedPanel)
+    print("playpanel in progress")
     groups.playGroup:addElement(playPanel)
+    groups.playGroup:addElement(moduleGui.life(mc, playPanel.x, playPanel.y))
+    print("playpanel Added")
     groups.pauseGroup:addElement(pausePanel)
     groups.restartGroup:addElement(restartPanel)
     groups.quitGroup:addElement(quitPanel)
     groups.gameoverGroup:addElement(gameoverPanel)
 
 
-    playPanel:setImage(const.SPRITE.PANEL_ONE)
     moduleGui.drawOptions(const.TEXT.TUTO, groups.startedGroup, startedPanel)
     
     

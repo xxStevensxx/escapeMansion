@@ -9,6 +9,7 @@ local util = require("utils")
 local obj = require("object")
 local mainCharAction = require("mainCharAction")
 local gameState = require("gameState")
+local services = require("services")
 
 -- Liste des personnages et objets existants dans le jeu
 local listCharacters = char.list()
@@ -306,6 +307,40 @@ function moduleGame.play()
 
         end
 
+        local mansion = require("mansion")
+        local mansion_map = require("mansion_map")
+        
+        local listRooms = mansion.getListRooms()
+
+
+        
+        for room = 1, #listRooms do
+            
+            for row = 1, #listRooms[room].grid do
+
+                local size = mansion_map.sizeGrid(listRooms[room].grid)
+                local mapWidth = size.width * 16 * _G.scale
+                local mapHeight = size.height * 16 * _G.scale
+
+                local offsetX = (listRooms[room].column - 1) * mapWidth
+                
+                for column = 1, #listRooms[room].grid[row] do
+                    
+                    local offsetY = (listRooms[room].row - 1) * mapHeight
+
+                    local tileID = listRooms[room].grid[row][column]
+
+                    -- love.graphics.print(tileID,  column * 16 * _G.scale, row * 16 * _G.scale, 0)
+                    love.graphics.print(tileID, offsetX + (column - 1) * 16 * _G.scale,  offsetY + (row - 1) * 16 * _G.scale, 0)
+
+
+                end
+
+            end
+
+
+        end
+
     end
 
     return game
@@ -364,36 +399,12 @@ function moduleGame.camera()
 
 end
 
+-- utile pour le gui vie inventaire etc
+function moduleGame.getMainCharacter()
 
--- Affiche la vie du personnage sous forme de coeurs a deplacer dans le gui 
- function moduleGame.life(character)
-     local hearthWidth, hearthHeight = const.SPRITE.LEFT_HEART:getDimensions()
-     local posX = _G.screenWidth - 400
-     local posY = 30
- 
-     for pv = 1, character.hp do
+    return mainCharacter
 
-         local impair = pv % 2 ~= 0
-
-         if impair then
-
-             love.graphics.draw(const.SPRITE.LEFT_HEART, posX , posY)
-
-         else
-
-             love.graphics.draw(const.SPRITE.RIGHT_HEART, posX, posY)
-
-         end
-
-         if impair == false then
-
-             posX = posX + hearthWidth / 4
-
-         end
-
-     end
-     
- end
+end
 
 
 function moduleGame.keypressed(key)
@@ -402,14 +413,14 @@ end
 
 -- Chargement initial du jeu
 function moduleGame.load()
-    gameState.load()
-    gs = gameState.getInstance()
     -- const.SOUND.MUSIC:setLooping(true)
     -- const.SOUND.MUSIC:play()
+    gameState.load()
     game = moduleGame.play()
     game:spawner(3)
     obj.load()
     mainCharAction = mainCharAction.new()
+
 end
 
 -- Mise à jour du jeu à chaque frame
@@ -421,12 +432,10 @@ end
 
 -- Dessin de tous les éléments du jeu à chaque frame
 function moduleGame.draw()
-    gameState.draw()
     game:drawCharacters(listCharacters)
     obj.draw()
     obj.nextToObject(mainCharacter, listObject)
     mainCharAction.draw()
-    moduleGame.life(mainCharacter)
 
     if debug == true then
         game:debug(listCharacters)

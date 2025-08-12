@@ -7,6 +7,26 @@ local const = require("const")
 local grid = require("grid")
 
 
+function module_mansion_map.sizeGrid(grid)
+
+    local sizeGrid = { width = 0, height = #grid}
+
+    for row = 1, #grid do
+
+        for column = 1, #grid[row] do
+
+            sizeGrid.width = #grid[row]
+
+        end
+
+    end
+
+    return sizeGrid
+
+end
+
+
+
 function module_mansion_map.new()
 
     -- Crée une nouvelle instance de la map du manoir avec ses propriétés initialisées
@@ -54,22 +74,27 @@ function module_mansion_map.create(pType)
 
     end
 
-
     -- Dessine chaque pièce en fonction de sa grille et des tiles dans la tilesheet
     function map:draw(listRooms)
 
+        
         local tileID
+
+        local offsetX 
+        local offsetY
 
         for roomIndex = 1, #listRooms do
 
             local room = listRooms[roomIndex]
 
-            -- Calcul du décalage horizontal selon la position de la pièce dans la map
-            local offsetX = (room.row - 1) * self.map.width
-            local offsetY = (room.column - 1) * self.map.height
-
-
             if #room.grid and #room.grid then 
+
+                local sizeMap = module_mansion_map.sizeGrid(room.grid)
+                self.map.width = sizeMap.width * self.tileWidth  * _G.scale
+                self.map.height = sizeMap.height * self.tileHeight * _G.scale
+
+                offsetX = (room.column - 1) * self.map.width
+                offsetY = (room.row - 1) * self.map.height
 
                 for row = 1, #room.grid do
 
@@ -78,19 +103,14 @@ function module_mansion_map.create(pType)
                         tileID = room.grid[row][column]
 
                         -- Dessiner la tuile correspondante avec mise à l’échelle
-                        love.graphics.draw(self.tileSheet, self.quad[tileID], offsetX + (column - 1)  * self.tileWidth * _G.scale, row  * self.tileHeight * _G.scale, 0, _G.scale, _G.scale)
-
+                        love.graphics.draw(self.tileSheet, self.quad[tileID], offsetX + (column - 1) * self.tileWidth * _G.scale, offsetY + (row - 1) * self.tileHeight * _G.scale, 0, _G.scale, _G.scale)                    
                     end
-
-                    -- Mise à jour des dimensions de la map selon la pièce dessinée
-                    -- self.map.line = #room[row]
-                    -- self.map.column = #room
-                    self.map.width = #room.grid[row] * self.tileWidth
-                    self.map.height = #room.grid * self.tileHeight
 
                 end
 
             end
+
+
 
         end
 
@@ -103,8 +123,6 @@ function module_mansion_map.create(pType)
         local mouseX = love.mouse.getX()
         local mouseY = love.mouse.getY()
         -- Variables de la position de la souris récupérées (non utilisées ici) dev pour debug
-
-                
 
 
     end
