@@ -87,7 +87,7 @@ function module_mansion_map.create(pType)
 
             local room = listRooms[roomIndex]
 
-            if #room.grid and #room.grid then 
+            if  #room.grid then 
 
                 local sizeMap = module_mansion_map.sizeGrid(room.grid)
                 self.map.width = sizeMap.width * self.tileWidth  * _G.scale

@@ -16,6 +16,8 @@ local row = 3
 local column = 5
 
 
+
+
 -- Génération d'une salle avec ses coordonnées et état initial (portes fermées)
 local function roomGenerator(pRow, pColumn)
 
@@ -31,8 +33,13 @@ local function roomGenerator(pRow, pColumn)
 
     }
 
+    return room
 
-local function addGrid(listRooms)
+end
+
+
+
+local function addGrid(room)
 
     for _, room in ipairs(listRooms) do
 
@@ -40,64 +47,85 @@ local function addGrid(listRooms)
         local down = room.doorDown
         local left = room.doorLeft
         local right = room.doorRight
+        local open = room.open
+
+        -- if not room.open then return end
 
         -- j'ai pas trouvé moins reberbatif...
-        if up and down and left and right then
-            -- Toutes les portes sont ouvertes
+        if up and down and left and right and open then
+                 -- Toutes les portes sont ouvertes
+                 room.grid = grid.MANSION.ROOM_UDRL
 
-        elseif up and down and left and not right then
-            -- Droite fermée, le reste ouvert
+            elseif up and down and left and not right and open then
+                -- Droite fermée, le reste ouvert         
+                room.grid = grid.MANSION.ROOM_UDL
+ 
+            elseif up and down and not left and right and open then
+                -- Gauche fermée
+                room.grid = grid.MANSION.ROOM_UDR
+               
+            elseif up and not down and left and right and open then
+                -- Bas fermé
+                room.grid = grid.MANSION.ROOM_URL
+               
+            elseif not up and down and left and right and open then
+                -- Haut fermé
+                room.grid = grid.MANSION.ROOM_DRL
 
-        elseif up and down and not left and right then
-            -- Gauche fermée
+            elseif up and down and not left and not right and open then
+                -- Gauche et droite fermées
+                room.grid = grid.MANSION.ROOM_UD
+               
+            elseif up and not down and not left and right and open then
+                -- Bas et gauche fermées            
+                room.grid = grid.MANSION.ROOM_UR  
+               
+            elseif not up and not down and left and right and open then
+                -- Haut et bas fermées
+                room.grid = grid.MANSION.ROOM_RL
+               
+            elseif not up and down and not left and right and open then
+                -- Haut et gauche fermées
+                room.grid = grid.MANSION.ROOM_DR
+               
+            elseif not up and not down and not left and right and open then
+                -- Seule droite ouverte
+                room.grid = grid.MANSION.ROOM_R
+               
+            elseif not up and down and not left and not right and open then
+                -- Seule bas ouverte
+                room.grid = grid.MANSION.ROOM_D
+               
+            elseif up and not down and not left and not right and open then
+                -- Seule haut ouverte
+                room.grid = grid.MANSION.ROOM_U
+               
+            elseif not up and not down and left and not right and open then
+                -- Seule gauche ouverte
+                room.grid = grid.MANSION.ROOM_L
+               
+            elseif up and not down and left and not right and open then
+                -- Droite fermée, haut et gauche ouverts
+                room.grid = grid.MANSION.ROOM_UL
 
-        elseif up and not down and left and right then
-            -- Bas fermé
+            elseif not up and down and left and not right and open then
+                -- Droite haut fermée, bas et gauche ouverts
+                room.grid = grid.MANSION.ROOM_DL
+                
+            elseif not up and not down and not left and not right and open then
+                -- Toutes les portes sont fermées
+                room.grid = grid.MANSION.ROOM
+               
+            else
 
-        elseif not up and down and left and right then
-            -- Haut fermé
+                room.grid = grid.MANSION.ROOM_UDRL
 
-        elseif up and down and not left and not right then
-            -- Gauche et droite fermées
-
-        elseif up and not down and not left and right then
-            -- Bas et gauche fermées
-
-        elseif not up and not down and left and right then
-            -- Haut et bas fermées
-
-        elseif not up and down and not left and right then
-            -- Haut et gauche fermées
-
-        elseif not up and not down and not left and right then
-            -- Seule droite ouverte
-
-        elseif not up and down and not left and not right then
-            -- Seule bas ouverte
-
-        elseif up and not down and not left and not right then
-            -- Seule haut ouverte
-
-        elseif not up and not down and left and not right then
-            -- Seule gauche ouverte
-
-        elseif up and not down and left and not right then
-            -- Droite fermée, haut et gauche ouverts
-
-        elseif not up and down and left and not right then
-            -- Droite fermée, bas et gauche ouverts
-
-        elseif not up and not down and not left and not right then
-            -- Toutes les portes sont fermées
+            end
 
         end
 
     end
 
-end
-
-    return room
-end
 
 -- Création d'une nouvelle instance de manoir avec paramètres de base
 function modulMansion.new()
@@ -190,10 +218,10 @@ function modulMansion.createMansion()
                 newRoom = self.miniMap[nRow -1][nColumn]
                 if newRoom.open == false then
                     room.doorUp = true
-                    room.grid = grid.MANSION.ROOM_SIX
+                    -- room.grid = grid.MANSION.ROOM_UD
                     newRoom.doorDown = true
                     newRoom.open = true
-                    newRoom.grid = grid.MANSION.ROOM_SIX
+                    -- newRoom.grid = grid.MANSION.ROOM_D
                     --TODO
                      table.insert(listRooms,newRoom)
 
@@ -207,10 +235,10 @@ function modulMansion.createMansion()
                 if newRoom.open == false then
 
                     room.doorRight = true
-                    room.grid = grid.MANSION.ROOM_SIX
+                    -- room.grid = grid.MANSION.ROOM_R
                     newRoom.doorLeft = true
                     newRoom.open = true
-                    newRoom.grid = grid.MANSION.ROOM_SIX
+                    -- newRoom.grid = grid.MANSION.ROOM_UDRL
                     table.insert(listRooms,newRoom)
 
                 end
@@ -222,10 +250,10 @@ function modulMansion.createMansion()
                 if newRoom.open == false then
 
                     room.doorDown = true
-                    room.grid = grid.MANSION.ROOM_SIX
+                    -- room.grid = grid.MANSION.ROOM_R
                     newRoom.doorUp = true
                     newRoom.open = true
-                    newRoom.grid = grid.MANSION.ROOM_SIX
+                    -- newRoom.grid = grid.MANSION.ROOM_U
                     table.insert(listRooms,newRoom)
 
                 end
@@ -237,17 +265,19 @@ function modulMansion.createMansion()
                 if newRoom.open == false then
 
                     room.doorLeft = true
-                    room.grid = grid.MANSION.ROOM_SIX
+                    -- room.grid = grid.MANSION.ROOM_L
                     newRoom.doorRight = true
                     newRoom.open = true
-                    newRoom.grid = grid.MANSION.ROOM_SIX
+                    -- newRoom.grid = grid.MANSION.ROOM_R
                     table.insert(listRooms,newRoom)
                 end
 
             end
 
+            --on ajoute nos grid en fonction des portes ouvertes pour des salles differents
+            addGrid(listRooms)
+            
         end
-
     end
 
     -- Dessine la miniMap avec les salles et leurs portes

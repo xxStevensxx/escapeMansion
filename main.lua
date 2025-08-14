@@ -28,7 +28,7 @@ function love.load()
     stateMachine.load()
     game.load()
     services.gui.load()
-    _G.scale = util.scale(3)
+    _G.scale = util.scale(1)
 end
 
 function love.update(dt)
