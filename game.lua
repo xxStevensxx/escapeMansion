@@ -10,12 +10,16 @@ local obj = require("object")
 local mainCharAction = require("mainCharAction")
 local gameState = require("gameState")
 local services = require("services")
+local mansion = require("mansion")
+local mansion_map = require("mansion_map")
+-- local cam = require("camera")
 
 -- Liste des personnages et objets existants dans le jeu
 local listCharacters = char.list()
 local listObject = obj.list()
 local mainCharacter
 local debug = false
+local cam
 local sndClone = util.sndClone()
 
 
@@ -90,6 +94,16 @@ function moduleGame.play()
 
 
     end
+
+
+    local listRooms = mansion.getListRooms()
+    function game:spawn(listCharacters, listObject, listRooms)
+
+
+
+    end
+
+    
 
    -- Mise à jour de l’animation pour tous les personnages
     function game:animation(listCharacters, dt)
@@ -247,7 +261,7 @@ function moduleGame.play()
     end
         
    -- Affiche tous les personnages
-    function game:drawCharacters(listCharacters, listObject)
+    function game:drawCharacters(listCharacters)
 
         for c = 1, #listCharacters do
 
@@ -261,6 +275,11 @@ function moduleGame.play()
 
    -- Affichage debug (informations détaillées)
     function game:debug(listCharacters)
+
+        -- centre de la map
+        love.graphics.setColor(1, 0, 1)
+        love.graphics.circle("fill", _G.screenWidth / 2, _G.screenHeight / 2, 10)
+        love.graphics.setColor(1, 1, 1)
 
         for c = 1, #listCharacters do 
 
@@ -307,37 +326,78 @@ function moduleGame.play()
 
         end
 
-        local mansion = require("mansion")
-        local mansion_map = require("mansion_map")
-        
         local listRooms = mansion.getListRooms()
 
+        local tileWidth, tileHeight = 16 * _G.scale, 16 * _G.scale
 
+        -- position souris
+        local mouseX = math.floor(love.mouse.getX()) -- + cam.x)
+        local mouseY = math.floor(love.mouse.getY()) -- + cam.y)
+
+        -- position tuile sous la souris
+        local MouseColumn = math.floor(mouseX / tileWidth) + 1
+        local mouseRow = math.floor(mouseY / tileHeight) + 1
+
+        love.graphics.print(mouseX, 150, 0)
+        love.graphics.print(mouseY, 350, 0)
+
+        local startRoom = listRooms[1]
+        local startRoomSize = mansion_map.sizeGrid(startRoom.grid)
+
+        local startRoomWidth = startRoomSize.width * tileWidth 
+        local startRoomHeight = startRoomSize.height * tileHeight 
+
+        local centerX = (_G.screenWidth / 2) - startRoomWidth / 2
+        local centerY = (_G.screenHeight / 2) - startRoomHeight / 2
+
+        local offsetX, offsetY
         
         for room = 1, #listRooms do
             
             for row = 1, #listRooms[room].grid do
 
                 local size = mansion_map.sizeGrid(listRooms[room].grid)
-                local mapWidth = size.width * 16 * _G.scale
-                local mapHeight = size.height * 16 * _G.scale
+                local mapWidth = size.width * tileWidth
+                local mapHeight = size.height * tileHeight
+ 
+                if offsetX ~= nil and offsetY ~= nil then
 
-                local offsetX = (listRooms[room].column - 1) * mapWidth
+                    if  mouseX >= centerX + offsetX and mouseX < (centerX + offsetX) + mapWidth and
+                        mouseY >= centerY + offsetY and mouseY < (centerY + offsetY) + mapHeight then
+
+                        love.graphics.print("on map", 300, 300)
+                        -- local idMouse = listRooms[room].grid[MouseColumn][mouseRow]
+                    else
+
+                        love.graphics.print("not on map", 100, 100)
+
+                    end
+
+                end
+                
+                    offsetX = (listRooms[room].column - startRoom.column) * mapWidth
                 
                 for column = 1, #listRooms[room].grid[row] do
                     
-                    local offsetY = (listRooms[room].row - 1) * mapHeight
+                    offsetY = (listRooms[room].row - startRoom.row) * mapHeight
 
                     local tileID = listRooms[room].grid[row][column]
 
-                    -- love.graphics.print(tileID,  column * 16 * _G.scale, row * 16 * _G.scale, 0)
-                    love.graphics.print(tileID, offsetX + (column - 1) * 16 * _G.scale,  offsetY + (row - 1) * 16 * _G.scale, 0)
+                    if listRooms[room].start then
 
+                        love.graphics.setColor(0,1,0)
+
+                    else
+
+                        love.graphics.setColor(1,1,1)
+
+                    end
+
+                    love.graphics.print(tileID, centerX + offsetX + (column - 1) * 16 * _G.scale, centerY + offsetY + (row - 1) * 16 * _G.scale, 0)
 
                 end
 
             end
-
 
         end
 
@@ -387,7 +447,8 @@ end
 -- Fonction pour centrer la caméra sur le personnage principal
 function moduleGame.camera()
     
-    local cam = {
+    cam = {
+
         x = 0,
         y = 0
     }
@@ -417,7 +478,7 @@ function moduleGame.load()
     -- const.SOUND.MUSIC:play()
     gameState.load()
     game = moduleGame.play()
-    game:spawner(3)
+    game:spawner(0)
     obj.load()
     mainCharAction = mainCharAction.new()
 

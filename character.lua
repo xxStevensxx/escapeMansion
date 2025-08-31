@@ -60,6 +60,8 @@ function moduleCharacter.create(pType)
 
     if pType == const.TYPE.SOLDIER then
 
+        character.x = _G.screenWidth / 2
+        character.y = _G.screenHeight / 2
         character.vision = 350
         character.range = 55
         character.hp = 100

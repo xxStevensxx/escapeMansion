@@ -9,10 +9,10 @@ local listRooms = {}
 local ms
 
 --var a modifié pour le nb de salle souhaité lors de la generation, max = row * column
-local nb = 5
+local nb = 10
 
 -- a modifier si on veux un manoir plus grand donc potentiellement un nb de salle max augmenté (aucun rapport avec la gestion des salles)
-local row = 3
+local row = 5
 local column = 5
 
 
@@ -184,6 +184,7 @@ function modulMansion.createMansion()
 
         self.roomStart = self.miniMap[randomRow][randomColumn]
         self.roomStart.open = true
+        self.roomStart.start = true
 
     end
 
@@ -322,7 +323,7 @@ function modulMansion.createMansion()
                 end
 
                 -- Dessine la salle elle-même
-                love.graphics.rectangle("line", x , y, self.width, self.height)
+                love.graphics.rectangle("fill", x , y, self.width, self.height)
 
                 ------------------------------------------------------------------------------------------------
 

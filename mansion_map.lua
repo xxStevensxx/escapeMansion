@@ -83,18 +83,30 @@ function module_mansion_map.create(pType)
         local offsetX 
         local offsetY
 
+        -- salle de depart toujours la premiere donc on peux mettre en dur
+        -- on recupere en amont la salle de depart pour afficher le reste en fonciton de cette salle
+        local startRoom = listRooms[1]
+        local startRoomSize = module_mansion_map.sizeGrid(startRoom.grid)
+
+        local startRoomWidth = startRoomSize.width * self.tileWidth * _G.scale
+        local startRoomHeight = startRoomSize.height * self.tileHeight * _G.scale 
+
+        local centerX = (_G.screenWidth / 2) - (startRoomWidth / 2)
+        local centerY = (_G.screenHeight / 2) - (startRoomHeight / 2)
+
         for roomIndex = 1, #listRooms do
 
             local room = listRooms[roomIndex]
 
-            if  #room.grid then 
+            if #room.grid then 
 
                 local sizeMap = module_mansion_map.sizeGrid(room.grid)
                 self.map.width = sizeMap.width * self.tileWidth  * _G.scale
                 self.map.height = sizeMap.height * self.tileHeight * _G.scale
 
-                offsetX = (room.column - 1) * self.map.width
-                offsetY = (room.row - 1) * self.map.height
+                --decalage par rapport à la salle de départ
+                offsetX = (room.column - startRoom.column) * self.map.width
+                offsetY = (room.row - startRoom.row) * self.map.height 
 
                 for row = 1, #room.grid do
 
@@ -103,14 +115,12 @@ function module_mansion_map.create(pType)
                         tileID = room.grid[row][column]
 
                         -- Dessiner la tuile correspondante avec mise à l’échelle
-                        love.graphics.draw(self.tileSheet, self.quad[tileID], offsetX + (column - 1) * self.tileWidth * _G.scale, offsetY + (row - 1) * self.tileHeight * _G.scale, 0, _G.scale, _G.scale)                    
+                        love.graphics.draw(self.tileSheet, self.quad[tileID], centerX + offsetX + (column - 1) * self.tileWidth * _G.scale, centerY + offsetY + (row - 1) * self.tileHeight * _G.scale, 0, _G.scale, _G.scale)                    
                     end
 
                 end
 
             end
-
-
 
         end
 
@@ -120,17 +130,12 @@ function module_mansion_map.create(pType)
         love.graphics.draw(self.tileSheet, self.quad[78],450, 100, 0, _G.scale, _G.scale)
         love.graphics.draw(self.tileSheet, self.quad[87],550, 340, 0, _G.scale, _G.scale)
 
-        local mouseX = love.mouse.getX()
-        local mouseY = love.mouse.getY()
-        -- Variables de la position de la souris récupérées (non utilisées ici) dev pour debug
-
 
     end
 
     return map
 
 end
-
 
 
 -- Charge la map en créant la map du manoir et en configurant la grille des pièces
