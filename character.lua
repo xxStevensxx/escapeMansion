@@ -17,7 +17,7 @@ function moduleCharacter.new()
         y = math.random(_G.screenHeight),
         vX = 0,
         vY = 0,
-        speed = 400,
+        speed = 305,
         state = const.STATE.NONE,
         animSpeed = 0,
         width = 0,
@@ -60,35 +60,35 @@ function moduleCharacter.create(pType)
 
     if pType == const.TYPE.SOLDIER then
 
-        character.x = _G.screenWidth / 2
-        character.y = _G.screenHeight / 2
-        character.vision = 350
-        character.range = 55
+        character.x = _G.worldWidth / 2
+        character.y = _G.worldHeight / 2
+        character.vision = 100 * _G.scale
+        character.range = 19 * _G.scale
         character.hp = 100
         character.inventory = {}
         character.isBusy = false
         
     elseif pType == const.TYPE.ORC then
 
-        character.vision = 100
-        character.range = 60
-        character.hp = 150
-        character.speed = 110
+        character.vision = 80 * _G.scale
+        character.range = 22 * _G.scale
+        character.hp = 120
+        character.speed = 90
 
     elseif pType == const.TYPE.ORC_RIDER then
 
-        character.vision = 160
-        character.range = 100
-        character.hp = 450
-        character.speed = 100
+        character.vision = 130 * _G.scale
+        character.range = 35 * _G.scale
+        character.hp = 275
+        character.speed = 125
 
 
     elseif pType == const.TYPE.ARMORED_SKELETON then
 
-        character.vision = 60
-        character.range = 80
+        character.vision = 60 * _G.scale
+        character.range = 25 * _G.scale
         character.hp = 200
-        character.speed = 80
+        character.speed = 95
 
     end
 

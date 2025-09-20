@@ -20,7 +20,11 @@ services.gameState = require("gameState")
 local const = require("const")
 
 function love.load()
+
+    _G.scale = util.scale(2)
     _G.screenWidth, _G.screenHeight = love.graphics.getDimensions()
+    _G.worldWidth, _G.worldHeight = 4500, 4500
+
     math.randomseed(os.time())
     math.random(); math.random(); math.random()
     character.load()
@@ -28,7 +32,7 @@ function love.load()
     stateMachine.load()
     game.load()
     services.gui.load()
-    _G.scale = util.scale(1)
+    
 end
 
 function love.update(dt)
@@ -57,11 +61,11 @@ function love.draw()
     end -- variable globale pour gameState instance
 
     love.graphics.push()
-    services.gui.draw()
     game.camera()
     mansion.draw()
     game.draw()
     love.graphics.pop()
+    services.gui.draw()
 
 end
 

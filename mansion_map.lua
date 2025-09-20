@@ -91,8 +91,8 @@ function module_mansion_map.create(pType)
         local startRoomWidth = startRoomSize.width * self.tileWidth * _G.scale
         local startRoomHeight = startRoomSize.height * self.tileHeight * _G.scale 
 
-        local centerX = (_G.screenWidth / 2) - (startRoomWidth / 2)
-        local centerY = (_G.screenHeight / 2) - (startRoomHeight / 2)
+        local centerX = (_G.worldWidth / 2) - (startRoomWidth / 2)
+        local centerY = (_G.worldWidth / 2) - (startRoomHeight / 2)
 
         for roomIndex = 1, #listRooms do
 

@@ -16,8 +16,10 @@ function moduleCamera.cam(characterX, characterY)
 
     local camera = moduleCamera.new()
 
-    camera.x = characterX - _G.screenWidth
-    camera.y = characterY - _G.screenHeight
+    camera.x = characterX 
+    camera.y = characterY
+    camera.worldWidth = 2500
+    camera.worldHeight = 2500
 
     love.graphics.translate(camera.x, camera.y)
 

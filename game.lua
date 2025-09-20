@@ -278,7 +278,7 @@ function moduleGame.play()
 
         -- centre de la map
         love.graphics.setColor(1, 0, 1)
-        love.graphics.circle("fill", _G.screenWidth / 2, _G.screenHeight / 2, 10)
+        love.graphics.circle("fill", _G.worldWidth / 2, _G.worldHeight / 2, 5)
         love.graphics.setColor(1, 1, 1)
 
         for c = 1, #listCharacters do 
@@ -331,15 +331,18 @@ function moduleGame.play()
         local tileWidth, tileHeight = 16 * _G.scale, 16 * _G.scale
 
         -- position souris
-        local mouseX = math.floor(love.mouse.getX()) -- + cam.x)
-        local mouseY = math.floor(love.mouse.getY()) -- + cam.y)
+        local mouseY = math.floor(love.mouse.getY() + cam.y)
+        local mouseX = math.floor(love.mouse.getX() + cam.x)
 
         -- position tuile sous la souris
         local MouseColumn = math.floor(mouseX / tileWidth) + 1
         local mouseRow = math.floor(mouseY / tileHeight) + 1
 
-        love.graphics.print(mouseX, 150, 0)
-        love.graphics.print(mouseY, 350, 0)
+        love.graphics.setColor(1,1,0)
+        love.graphics.print("mouse  x: "..mouseX, _G.worldWidth / 2, (_G.worldHeight / 2) - 300)
+        love.graphics.print("mouse y: "..mouseY, (_G.worldWidth / 2) + 300, (_G.worldHeight / 2) - 300)
+        love.graphics.setColor(1,1,1)
+        
 
         local startRoom = listRooms[1]
         local startRoomSize = mansion_map.sizeGrid(startRoom.grid)
@@ -347,8 +350,8 @@ function moduleGame.play()
         local startRoomWidth = startRoomSize.width * tileWidth 
         local startRoomHeight = startRoomSize.height * tileHeight 
 
-        local centerX = (_G.screenWidth / 2) - startRoomWidth / 2
-        local centerY = (_G.screenHeight / 2) - startRoomHeight / 2
+        local centerX = (_G.worldWidth / 2) - startRoomWidth / 2
+        local centerY = (_G.worldHeight / 2) - startRoomHeight / 2
 
         local offsetX, offsetY
         
@@ -365,11 +368,11 @@ function moduleGame.play()
                     if  mouseX >= centerX + offsetX and mouseX < (centerX + offsetX) + mapWidth and
                         mouseY >= centerY + offsetY and mouseY < (centerY + offsetY) + mapHeight then
 
-                        love.graphics.print("on map", 300, 300)
+                        love.graphics.print("on map", _G.screenWidth / 2 , (_G.screenHeight/ 2) - 100)
                         -- local idMouse = listRooms[room].grid[MouseColumn][mouseRow]
                     else
 
-                        love.graphics.print("not on map", 100, 100)
+                        love.graphics.print("not on map",  _G.worldWidth / 2, (_G.worldHeight / 2) - 100)
 
                     end
 
@@ -408,7 +411,7 @@ function moduleGame.play()
 end
 
 -- Gestion des collisions avec les bords de l’écran apres a gerer avec les tuiles 
- function moduleGame.collider(character)
+ function moduleGame.collider(character, grid)
 
     local colision = false
 
@@ -419,9 +422,9 @@ end
 
     end
 
-    if character.x > _G.screenWidth then
+    if character.x > _G.worldWidth then
 
-        character.x = _G.screenWidth 
+        character.x = _G.worldWidth 
         colision = true
 
     end
@@ -433,9 +436,9 @@ end
 
     end
 
-    if character.y > _G.screenHeight  then
+    if character.y > _G.worldHeight  then
         
-        character.y = _G.screenHeight
+        character.y = _G.worldHeight
         colision = true
 
     end
@@ -455,6 +458,15 @@ function moduleGame.camera()
 
     cam.x = mainCharacter.x - _G.screenWidth / 2
     cam.y = mainCharacter.y - _G.screenHeight / 2
+
+
+    if cam.x > _G.worldWidth then
+            cam.x = _G.worldWidth
+    end
+
+    if cam.y > _G.worldHeight then
+        cam.y = _G.worldHeight
+    end
 
     love.graphics.translate(-cam.x, -cam.y)
 
@@ -478,7 +490,7 @@ function moduleGame.load()
     -- const.SOUND.MUSIC:play()
     gameState.load()
     game = moduleGame.play()
-    game:spawner(0)
+    game:spawner(5)
     obj.load()
     mainCharAction = mainCharAction.new()
 

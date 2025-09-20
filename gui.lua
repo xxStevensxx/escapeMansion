@@ -355,7 +355,7 @@ function moduleGui.load()
     local quitPanel = moduleGui.newPanel(0, 0, 400, 300)
     local gameoverPanel = moduleGui.newPanel(0, 0, 400, 300)
 
-    local playPanel = moduleGui.newPanel(10, 100, 500, 100)
+    local playPanel = moduleGui.newPanel(5, 5, _G.screenWidth -10, 100)
     playPanel:setImage(const.SPRITE.PANEL_ONE)
     
 
