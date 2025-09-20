@@ -21,7 +21,7 @@ local const = require("const")
 
 function love.load()
 
-    _G.scale = util.scale(2)
+    _G.scale = util.scale(3)
     _G.screenWidth, _G.screenHeight = love.graphics.getDimensions()
     _G.worldWidth, _G.worldHeight = 4500, 4500
 
