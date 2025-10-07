@@ -9,7 +9,7 @@ local listRooms = {}
 local ms
 
 --var a modifié pour le nb de salle souhaité lors de la generation, max = row * column
-local nb = 10
+local nb = 8
 
 -- a modifier si on veux un manoir plus grand donc potentiellement un nb de salle max augmenté (aucun rapport avec la gestion des salles)
 local row = 5
