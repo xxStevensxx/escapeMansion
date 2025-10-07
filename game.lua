@@ -509,7 +509,7 @@ function moduleGame.load()
     -- const.SOUND.MUSIC:play()
     gameState.load()
     game = moduleGame.play()
-    game:spawner(5)
+    game:spawner(10)
     obj.load()
     mainCharAction = mainCharAction.new()
 
